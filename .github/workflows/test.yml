@@ -27,6 +27,8 @@ env:
   UV_VERSION: 0.9.13
   # renovate: datasource=pypi depName=tox
   TOX_VERSION: 4.32.0
+  # renovate: datasource=pypi depName=tox-gh
+  TOX_GH_VERSION: 1.6.1
   # renovate: datasource=pypi depName=tox-uv
   TOX_UV_VERSION: 1.29.0
 
@@ -43,9 +45,6 @@ jobs:
         - "3.13"
         - "3.14"
         - "3.15"
-        include:
-        - { environment: "dependencies", python-version: "3.x" }
-        - { environment: "typing",       python-version: "3.x" }
 
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
@@ -63,5 +62,6 @@ jobs:
       run: >
         uvx
         --with tox-uv==${{ env.TOX_UV_VERSION }}
+        --with tox-gh==${{ env.TOX_GH_VERSION }}
         --with tox==${{ env.TOX_VERSION }}
-        tox -e ${{ matrix.environment || matrix.python-version }}
+        tox
