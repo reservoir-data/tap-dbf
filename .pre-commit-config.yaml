@@ -44,7 +44,7 @@ repos:
       - pyjson5==1.6.9
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: "0.8.11"
+  rev: "0.8.13"
   hooks:
     - id: uv-lock
     - id: uv-sync
