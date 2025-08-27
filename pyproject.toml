@@ -51,9 +51,9 @@ optional-dependencies.gcs = [
 optional-dependencies.s3 = [
   "s3fs~=2025.7.0",
 ]
-urls.Documentation = "https://github.com/edgarrmondragon/tap-dbf#readme"
-urls.Homepage = "https://github.com/edgarrmondragon/tap-dbf"
-urls.Repository = "https://github.com/edgarrmondragon/tap-dbf"
+urls.Documentation = "https://github.com/reservoir-data/tap-dbf#readme"
+urls.Homepage = "https://github.com/reservoir-data/tap-dbf"
+urls.Repository = "https://github.com/reservoir-data/tap-dbf"
 scripts."tap-dbf" = "tap_dbf.tap:TapDBF.cli"
 
 [dependency-groups]
