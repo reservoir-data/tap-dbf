@@ -40,7 +40,7 @@ dynamic = [
 dependencies = [
   "dbfread~=2.0.7",
   "fsspec~=2025.9.0",
-  "singer-sdk~=0.48.0",
+  "singer-sdk~=0.50.1",
 ]
 optional-dependencies.all = [
   "tap-dbf[gcs,s3]",
