@@ -60,7 +60,7 @@ jobs:
     - name: Run
       run: >
         uvx
+        --with tox-uv==${{ env.TOX_UV_VERSION }}
         --with tox-gh==${{ env.TOX_GH_VERSION }}
-        --with 'tox-uv @ git+https://github.com/tox-dev/tox-uv.git'
         --with tox==${{ env.TOX_VERSION }}
         tox
