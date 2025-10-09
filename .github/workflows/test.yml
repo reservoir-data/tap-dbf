@@ -24,7 +24,7 @@ on:
 env:
   FORCE_COLOR: 1
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.8.13
+  UV_VERSION: 0.8.23
   # renovate: datasource=pypi depName=tox
   TOX_VERSION: 4.28.4
   # renovate: datasource=pypi depName=tox-uv
