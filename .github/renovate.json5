@@ -1,11 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    // https://github.com/edgarrmondragon/.github/blob/main/renovate/singer.json5
-    "edgarrmondragon/.github//renovate/singer.json5",
-
-    // https://github.com/edgarrmondragon/.github/blob/main/renovate/uv.json5
-    "edgarrmondragon/.github//renovate/uv.json5",
+    // https://docs.renovatebot.com/config-presets/#grouporganization-level-presets
+    // https://github.com/reservoir-data/.github/blob/main/.github/renovate.json5
+    "reservoir-data/.github//.github/renovate.json5"
   ],
 
   // https://docs.renovatebot.com/configuration-options/#packagerules
