@@ -147,7 +147,7 @@ env_list = [
 "3.9" = [ "3.9" ]
 
 [tool.tox.env_run_base]
-# runner = "uv-venv-lock-runner"
+runner = "uv-venv-lock-runner"
 pip_pre = true
 extras = [ "all" ]
 pass_env = [ "TAP_DBF_*" ]
