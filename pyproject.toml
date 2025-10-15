@@ -127,7 +127,7 @@ addopts = [ "-vvv" ]
 
 [tool.tox]
 min_version = "4.22"
-requires = [ "tox", "tox-uv" ]
+requires = [ "tox", "tox-uv", "tox-gh" ]
 env_list = [
   "dependencies",
   "typing",
@@ -137,6 +137,13 @@ env_list = [
   "3.11",
   "3.10",
 ]
+
+[tool.tox.gh.python]
+"3.14" = [ "3.14" ]
+"3.13" = [ "3.13", "dependencies", "typing" ]
+"3.12" = [ "3.12" ]
+"3.11" = [ "3.11" ]
+"3.10" = [ "3.10" ]
 
 [tool.tox.env_run_base]
 runner = "uv-venv-lock-runner"
