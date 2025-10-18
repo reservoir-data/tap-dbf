@@ -37,7 +37,7 @@ if t.TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def dbf_field_to_jsonschema(field: DBFField) -> dict[str, t.Any]:
+def dbf_field_to_jsonschema(field: DBFField) -> dict[str, t.Any]:  # ty: ignore[invalid-type-form]
     """Map a .dbf data type to a JSON schema.
 
     Args:
@@ -154,10 +154,13 @@ class DBFStream(Stream):
         schema: dict[str, t.Any] = {"properties": {}}
         self.primary_keys = []
 
+        primary_keys = []
         for field in self._fields:
             schema["properties"][field.name] = dbf_field_to_jsonschema(field)
             if field.type == "+":
-                self.primary_keys.append(field.name)
+                primary_keys.append(field.name)
+
+        self.primary_keys = primary_keys
 
         schema["properties"]["_sdc_filepath"] = {"type": ["string"]}
         schema["properties"]["_sdc_row_index"] = {"type": ["integer"]}
