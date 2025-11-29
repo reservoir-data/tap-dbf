@@ -42,6 +42,7 @@ dependencies = [
   "dbfread~=2.0.7",
   "fsspec~=2025.10.0",
   "singer-sdk~=0.53.2",
+  "typing-extensions>=4.15; python_full_version<'3.12'",
 ]
 optional-dependencies.all = [
   "tap-dbf[gcs,s3]",
@@ -77,11 +78,17 @@ typing = [
 [tool.hatch.version]
 source = "vcs"
 
+[tool.uv]
+prerelease = "allow"
+preview = true
+required-version = ">=0.9"
+
 [tool.ruff]
 src = [
   "tap_dbf",
   "tests",
 ]
+preview = true
 lint.select = [
   "ALL",
 ]
@@ -183,8 +190,3 @@ module = [
   "dbfread.*",
   "fsspec.*",
 ]
-
-[tool.uv]
-prerelease = "allow"
-preview = true
-required-version = ">=0.5.19"
