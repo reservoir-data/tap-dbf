@@ -7,14 +7,17 @@ from __future__ import annotations
 
 import builtins
 import logging
+import re
 import sys
-from pathlib import Path
+from functools import cached_property
 from typing import TYPE_CHECKING, Any, BinaryIO
-from urllib.parse import parse_qsl, urlparse, urlunparse
+from urllib.parse import ParseResult, parse_qsl, urlparse, urlunparse
 
 import fsspec
 import singer_sdk.typing as th
 from singer_sdk import Stream, Tap
+from singer_sdk.singerlib import Catalog, CatalogEntry, MetadataMapping, Schema
+from singer_sdk.streams.core import REPLICATION_FULL_TABLE
 
 from tap_dbf.client import FilesystemDBF
 
@@ -43,7 +46,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def dbf_field_to_jsonschema(field: DBFField) -> dict[str, Any]:  # ty: ignore[invalid-type-form]
+def _dbf_field_to_jsonschema(field: DBFField) -> dict[str, Any]:  # ty: ignore[invalid-type-form]
     """Map a .dbf data type to a JSON schema.
 
     Args:
@@ -75,6 +78,57 @@ def dbf_field_to_jsonschema(field: DBFField) -> dict[str, Any]:  # ty: ignore[in
         d["maxLength"] = field.length
 
     return d
+
+
+def normalize_stream_name(filename: str) -> str:
+    """Normalize a stream name.
+
+    Args:
+        filename: The filename to normalize to a stream name.
+
+    - Replace non-alphanumeric characters with underscores
+    - Convert to lowercase
+    - Replace multiple consecutive underscores with a single underscore
+    - Remove leading and trailing underscores
+
+    Returns:
+        The normalized stream name.
+    """
+    normalized = re.sub(r"[^a-zA-Z0-9]", "_", filename).lower()
+    normalized = re.sub(r"_+", "_", normalized)
+    return normalized.strip("_")
+
+
+def dbf_table_to_catalog_entry(table: FilesystemDBF) -> CatalogEntry:
+    """Convert a DBF table to a catalog entry.
+
+    Args:
+        table: The DBF table to convert.
+
+    Returns:
+        A catalog entry.
+    """
+    schema: dict[str, Any] = {"type": "object", "properties": {}}
+    primary_keys = []
+    for field in table.fields:
+        schema["properties"][field.name] = _dbf_field_to_jsonschema(field)
+        if field.type == "+":
+            primary_keys.append(field.name)
+    schema["properties"]["_sdc_filepath"] = {"type": ["string"]}
+    schema["properties"]["_sdc_row_index"] = {"type": ["integer"]}
+    stream_name = normalize_stream_name(table.name)
+    metadata = MetadataMapping.get_standard_metadata(
+        schema=schema,
+        key_properties=primary_keys,
+        replication_method=REPLICATION_FULL_TABLE,
+    )
+    return CatalogEntry(
+        tap_stream_id=stream_name,
+        stream=stream_name,
+        schema=Schema.from_dict(schema),
+        key_properties=primary_keys,
+        metadata=metadata,
+    )
 
 
 class PatchOpen:
@@ -133,46 +187,19 @@ class DBFStream(Stream):
     def __init__(
         self: DBFStream,
         tap: Tap,
-        filepath: str,
-        filesystem: AbstractFileSystem,
-        *,
-        ignore_missing_memofile: bool = False,
+        table: FilesystemDBF,
+        catalog_entry: CatalogEntry,
     ) -> None:
         """Create a new .DBF file stream.
 
         Args:
             tap: The tap instance.
-            filepath: The path to the .DBF file.
-            filesystem: The filesystem instance to use.
-            ignore_missing_memofile: Whether to ignore missing .DBT files.
+            table: The DBF table instance.
+            catalog_entry: The catalog entry instance.
         """
-        self.filepath = filepath
-        self.filesystem = filesystem
-        name = Path(filepath).stem
-
-        self._table: FilesystemDBF = FilesystemDBF(
-            filepath,
-            ignorecase=False,
-            ignore_missing_memofile=ignore_missing_memofile,
-            filesystem=filesystem,
-        )
-
-        self._fields = list(self._table.fields)
-        schema: dict[str, Any] = {"properties": {}}
-        self.primary_keys = []
-
-        primary_keys = []
-        for field in self._fields:
-            schema["properties"][field.name] = dbf_field_to_jsonschema(field)
-            if field.type == "+":
-                primary_keys.append(field.name)
-
-        self.primary_keys = primary_keys
-
-        schema["properties"]["_sdc_filepath"] = {"type": ["string"]}
-        schema["properties"]["_sdc_row_index"] = {"type": ["integer"]}
-
-        super().__init__(tap, schema=schema, name=name)
+        self._table = table
+        schema = catalog_entry.schema.to_dict()
+        super().__init__(tap, schema=schema, name=catalog_entry.tap_stream_id)
 
     @override
     def get_records(
@@ -185,7 +212,7 @@ class DBFStream(Stream):
             A row of data.
         """
         for index, row in enumerate(self._table):
-            row["_sdc_filepath"] = self.filepath
+            row["_sdc_filepath"] = self._table.filename
             row["_sdc_row_index"] = index
             yield row
 
@@ -259,42 +286,83 @@ class TapDBF(Tap):
     ).to_dict()
 
     @override
-    def discover_streams(self: TapDBF) -> list[DBFStream]:
-        """Discover .DBF files in the path.
+    def __init__(self: TapDBF, *args: Any, **kwargs: Any) -> None:
+        """Initialize the tap.
 
-        Returns:
-            A list of streams.
+        Args:
+            *args: Positional arguments for the Tap initializer.
+            **kwargs: Keyword arguments for the Tap initializer.
         """
-        streams = []
+        self._tables: list[FilesystemDBF] | None = None
+        self._url: ParseResult | None = None
+        self._fs: AbstractFileSystem | None = None
+        super().__init__(*args, **kwargs)
 
-        fs_root: str = self.config["fs_root"]
-        url = urlparse(fs_root)
-        protocol = url.scheme
+    @property
+    def url(self) -> ParseResult:
+        """The URL to use."""
+        if self._url is None:
+            fs_root: str = self.config["fs_root"]
+            self._url = urlparse(fs_root)
+        return self._url
 
-        storage_options = {
-            **dict(parse_qsl(url.query)),
-            **self.config.get(protocol, {}),
-        }
+    @property
+    def fs(self) -> AbstractFileSystem:
+        """The filesystem to use."""
+        if self._fs is None:
+            protocol = self.url.scheme
+            storage_options = {
+                **dict(parse_qsl(self.url.query)),
+                **self.config.get(protocol, {}),
+            }
+            self._fs = fsspec.filesystem(self.url.scheme, **storage_options)
+        return self._fs
 
-        fs: AbstractFileSystem = fsspec.filesystem(url.scheme, **storage_options)
-
-        path = url.path + self.config["path"]
-        if not url.hostname:
+    @property
+    def full_path(self) -> str:
+        """The full path to the files."""
+        path = self.url.path + self.config["path"]
+        if not self.url.hostname:
             hostname, path = path.split("/", 1)
         else:
-            hostname = url.hostname
+            hostname = self.url.hostname
+        return urlunparse(self.url._replace(query="", netloc=hostname, path=path))
 
-        full_path = urlunparse(url._replace(query="", netloc=hostname, path=path))
+    @property
+    def tables(self) -> list[FilesystemDBF]:
+        """The tables to discover."""
+        if self._tables is None:
+            self._tables = [
+                FilesystemDBF(
+                    filepath,
+                    ignorecase=False,
+                    ignore_missing_memofile=self.config["ignore_missing_memofile"],
+                    filesystem=self.fs,
+                )
+                for filepath in self.fs.glob(self.full_path)
+            ]
 
-        for match in fs.glob(full_path):
-            self.logger.info("Extracting from %s://%s", url.scheme, match)
-            stream = DBFStream(
+        return self._tables
+
+    @cached_property
+    def _tables_by_stream_id(self) -> dict[str, FilesystemDBF]:
+        """Map stream IDs to tables."""
+        return {normalize_stream_name(table.name): table for table in self.tables}
+
+    @override
+    @property
+    def _singer_catalog(self) -> Catalog:
+        """The Singer catalog object."""
+        catalog_entries = [dbf_table_to_catalog_entry(table) for table in self.tables]
+        return Catalog((entry.tap_stream_id, entry) for entry in catalog_entries)
+
+    @override
+    def discover_streams(self: TapDBF) -> list[DBFStream]:
+        return [
+            DBFStream(
                 tap=self,
-                filepath=match,
-                filesystem=fs,
-                ignore_missing_memofile=self.config["ignore_missing_memofile"],
+                table=self._tables_by_stream_id[tap_stream_id],
+                catalog_entry=catalog_entry,
             )
-
-            streams.append(stream)
-
-        return streams
+            for tap_stream_id, catalog_entry in self.catalog.items()
+        ]
