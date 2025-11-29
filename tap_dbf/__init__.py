@@ -1,4 +1,4 @@
 """Singer tap for .DBF files.
 
-Copyright 2024 Edgar Ramírez-Mondragón.
+Copyright 2025 Edgar Ramírez-Mondragón.
 """

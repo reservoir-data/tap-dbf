@@ -1,14 +1,15 @@
 """Singer SDK classes.
 
-Copyright 2024 Edgar Ramírez-Mondragón.
+Copyright 2025 Edgar Ramírez-Mondragón.
 """
 
 from __future__ import annotations
 
 import builtins
 import logging
-import typing as t
+import sys
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, BinaryIO
 from urllib.parse import parse_qsl, urlparse, urlunparse
 
 import fsspec
@@ -17,8 +18,13 @@ from singer_sdk import Stream, Tap
 
 from tap_dbf.client import FilesystemDBF
 
-if t.TYPE_CHECKING:
-    import sys
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
     from os import PathLike
     from types import TracebackType
 
@@ -31,13 +37,13 @@ if t.TYPE_CHECKING:
     else:
         from typing_extensions import Self
 
-    OpenFunc = t.Callable[[PathLike[bytes], str], t.BinaryIO]
-    RawRecord = dict[str, t.Any]
+    OpenFunc = Callable[[PathLike[bytes], str], BinaryIO]
+    RawRecord = dict[str, Any]
 
 logger = logging.getLogger(__name__)
 
 
-def dbf_field_to_jsonschema(field: DBFField) -> dict[str, t.Any]:  # ty: ignore[invalid-type-form]
+def dbf_field_to_jsonschema(field: DBFField) -> dict[str, Any]:  # ty: ignore[invalid-type-form]
     """Map a .dbf data type to a JSON schema.
 
     Args:
@@ -46,7 +52,7 @@ def dbf_field_to_jsonschema(field: DBFField) -> dict[str, t.Any]:  # ty: ignore[
     Returns:
         A JSON schema.
     """
-    d: dict[str, t.Any] = {"type": ["null"]}
+    d: dict[str, Any] = {"type": ["null"]}
     if field.type == "N":
         if field.decimal_count == 0:
             d["type"].append("integer")
@@ -123,6 +129,7 @@ def _patch_open(func: OpenFunc) -> OpenFunc:
 class DBFStream(Stream):
     """A dBase file stream."""
 
+    @override
     def __init__(
         self: DBFStream,
         tap: Tap,
@@ -151,7 +158,7 @@ class DBFStream(Stream):
         )
 
         self._fields = list(self._table.fields)
-        schema: dict[str, t.Any] = {"properties": {}}
+        schema: dict[str, Any] = {"properties": {}}
         self.primary_keys = []
 
         primary_keys = []
@@ -167,10 +174,11 @@ class DBFStream(Stream):
 
         super().__init__(tap, schema=schema, name=name)
 
+    @override
     def get_records(
         self: DBFStream,
-        _: Context | None = None,
-    ) -> t.Iterable[RawRecord]:
+        context: Context | None = None,
+    ) -> Iterable[RawRecord]:
         """Get .DBF rows.
 
         Yields:
@@ -250,6 +258,7 @@ class TapDBF(Tap):
         ),
     ).to_dict()
 
+    @override
     def discover_streams(self: TapDBF) -> list[DBFStream]:
         """Discover .DBF files in the path.
 

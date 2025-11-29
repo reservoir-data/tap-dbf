@@ -7,22 +7,31 @@ from __future__ import annotations
 
 import collections
 import datetime
-import typing as t
+import sys
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 from dbfread import DBF
 from dbfread.dbf import expand_year, ifind
 from dbfread.exceptions import DBFNotFound
 from dbfread.field_parser import FieldParser
 
-if t.TYPE_CHECKING:
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from fsspec import AbstractFileSystem
 
 
 class FilesystemDBF(DBF):  # type: ignore[misc]
     """A DBF implementation that can open files in arbitrary filesystems."""
 
-    def __init__(  # noqa: PLR0913
+    @override
+    def __init__(
         self,
         filename: str,
         filesystem: AbstractFileSystem,
@@ -31,7 +40,7 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
         ignorecase: bool = True,
         lowernames: bool = False,
         parserclass: type[FieldParser] = FieldParser,
-        recfactory: type[dict[str, t.Any]] = collections.OrderedDict,
+        recfactory: type[dict[str, Any]] = collections.OrderedDict,
         load: bool = False,
         raw: bool = False,
         ignore_missing_memofile: bool = False,
@@ -70,8 +79,8 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
 
         # Filled in by self._read_headers()
         self.memofilename = None
-        self.header: t.Any | None = None
-        self.fields: list[t.Any] = []  # namedtuples
+        self.header: Any | None = None
+        self.fields: list[Any] = []  # namedtuples
         self.field_names: list[str] = []  # strings
 
         with self.filesystem.open(self.filename, mode="rb") as infile:
@@ -94,6 +103,7 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
         if load:
             self.load()
 
+    @override
     def _count_records(self, record_type: bytes = b" ") -> int:
         """Count records in the table.
 
@@ -122,10 +132,11 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
 
         return count
 
+    @override
     def _iter_records(
         self,
         record_type: bytes = b" ",
-    ) -> t.Generator[dict[str, t.Any], None, None]:
+    ) -> Generator[dict[str, Any], None, None]:
         """Iterate over records in the table.
 
         Args:

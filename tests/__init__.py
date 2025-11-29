@@ -1,4 +1,4 @@
 """Tests for tap-dbf.
 
-Copyright 2024 Edgar Ramírez-Mondragón.
+Copyright 2025 Edgar Ramírez-Mondragón.
 """
