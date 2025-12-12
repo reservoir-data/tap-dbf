@@ -2,7 +2,7 @@
 build-backend = "hatchling.build"
 requires = [
   "hatch-vcs==0.5",
-  "hatchling==1.28.0",
+  "hatchling==1.28",
 ]
 
 [project]
@@ -136,17 +136,20 @@ addopts = [ "-vvv" ]
 
 [tool.tox]
 min_version = "4.22"
-requires = [ "tox", "tox-uv" ]
+requires = [ "tox", "tox-uv", "tox-gh>=1.6.1" ]
 env_list = [
   "dependencies",
   "typing",
-  "3.15",
   "3.14",
-  "3.13",
-  "3.12",
-  "3.11",
-  "3.10",
 ]
+
+[tool.tox.gh.python]
+"3.15" = [ "3.15" ]
+"3.14" = [ "3.14", "dependencies", "typing" ]
+"3.13" = [ "3.13" ]
+"3.12" = [ "3.12" ]
+"3.11" = [ "3.11" ]
+"3.10" = [ "3.10" ]
 
 [tool.tox.env_run_base]
 runner = "uv-venv-lock-runner"
