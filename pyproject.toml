@@ -143,23 +143,6 @@ env_list = [
   "3.14",
 ]
 
-[tool.tox.gh.python]
-"3.15" = [ "3.15" ]
-"3.14" = [ "3.14", "dependencies", "typing" ]
-"3.13" = [ "3.13" ]
-"3.12" = [ "3.12" ]
-"3.11" = [ "3.11" ]
-"3.10" = [ "3.10" ]
-
-[tool.tox.env_run_base]
-runner = "uv-venv-lock-runner"
-pip_pre = true
-extras = [ "all" ]
-pass_env = [ "TAP_DBF_*" ]
-set_env = { "PYO3_USE_ABI3_FORWARD_COMPATIBILITY" = "1" }
-dependency_groups = [ "testing" ]
-commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
-
 [tool.tox.env.dependencies]
 dependency_groups = [ "testing" ]
 commands = [ [ "deptry", "." ] ]
@@ -175,6 +158,23 @@ commands = [
   [ "mypy", "--strict", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
   [ "ty", "check", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
 ]
+
+[tool.tox.env_run_base]
+runner = "uv-venv-lock-runner"
+pip_pre = true
+extras = [ "all" ]
+pass_env = [ "TAP_DBF_*" ]
+set_env = { "PYO3_USE_ABI3_FORWARD_COMPATIBILITY" = "1" }
+dependency_groups = [ "testing" ]
+commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
+
+[tool.tox.gh.python]
+"3.15" = [ "3.15" ]
+"3.14" = [ "3.14", "dependencies", "typing" ]
+"3.13" = [ "3.13" ]
+"3.12" = [ "3.12" ]
+"3.11" = [ "3.11" ]
+"3.10" = [ "3.10" ]
 
 [tool.mypy]
 enable_error_code = [
