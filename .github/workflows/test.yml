@@ -21,6 +21,9 @@ on:
   - cron: "0 10 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   FORCE_COLOR: 1
   # renovate: datasource=pypi depName=uv
