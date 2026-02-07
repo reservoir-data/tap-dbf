@@ -27,7 +27,7 @@ permissions:
 env:
   FORCE_COLOR: 1
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.9.18
+  UV_VERSION: 0.9.28
   # renovate: datasource=pypi depName=tox
   TOX_VERSION: 4.32.0
   # renovate: datasource=pypi depName=tox-gh
