@@ -75,13 +75,13 @@ typing = [
   "typing-extensions>=4.7.1; python_version<'3.11'",
 ]
 
-[tool.hatch.version]
-source = "vcs"
+[tool.hatch]
+version.source = "vcs"
 
 [tool.uv]
+required-version = ">=0.9"
 prerelease = "allow"
 preview = true
-required-version = ">=0.9"
 
 [tool.ruff]
 src = [
@@ -115,24 +115,22 @@ lint.isort.required-imports = [
 lint.pydocstyle.convention = "google"
 lint.preview = true
 
-[tool.deptry.package_module_name_map]
-mypy = "mypy"
-
-[tool.deptry.per_rule_ignores]
-DEP002 = [
+[tool.deptry]
+package_module_name_map.mypy = "mypy"
+per_rule_ignores.DEP002 = [
   "gcsfs",
   "s3fs",
   "tap-dbf",
 ]
-DEP004 = [
+per_rule_ignores.DEP004 = [
   "typing_extensions",
 ]
 
 [tool.pyproject-fmt]
 max_supported_python = "3.15"
 
-[tool.pytest.ini_options]
-addopts = [ "-vvv" ]
+[tool.pytest]
+ini_options.addopts = [ "-vvv" ]
 
 [tool.tox]
 min_version = "4.22"
@@ -142,39 +140,29 @@ env_list = [
   "typing",
   "3.14",
 ]
-
-[tool.tox.env.dependencies]
-dependency_groups = [ "testing" ]
-commands = [ [ "deptry", "." ] ]
-
-[tool.tox.env.sync]
-pip_pre = true
-set_env = { TAP_DBF_PATH = "tests/data/files/contacts.dbf", TAP_DBF_IGNORE_MISSING_MEMOFILE = "true" }
-commands = [ [ "tap-dbf", { replace = "posargs", default = [ "--config=ENV" ], extend = true } ] ]
-
-[tool.tox.env.typing]
-dependency_groups = [ "testing", "typing" ]
-commands = [
+env.dependencies.dependency_groups = [ "testing" ]
+env.dependencies.commands = [ [ "deptry", "." ] ]
+env.sync.pip_pre = true
+env.sync.set_env = { TAP_DBF_PATH = "tests/data/files/contacts.dbf", TAP_DBF_IGNORE_MISSING_MEMOFILE = "true" }
+env.sync.commands = [ [ "tap-dbf", { replace = "posargs", default = [ "--config=ENV" ], extend = true } ] ]
+env.typing.dependency_groups = [ "testing", "typing" ]
+env.typing.commands = [
   [ "mypy", "--strict", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
   [ "ty", "check", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
 ]
-
-[tool.tox.env_run_base]
-runner = "uv-venv-lock-runner"
-pip_pre = true
-extras = [ "all" ]
-pass_env = [ "TAP_DBF_*" ]
-set_env = { "PYO3_USE_ABI3_FORWARD_COMPATIBILITY" = "1" }
-dependency_groups = [ "testing" ]
-commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
-
-[tool.tox.gh.python]
-"3.15" = [ "3.15" ]
-"3.14" = [ "3.14", "dependencies", "typing" ]
-"3.13" = [ "3.13" ]
-"3.12" = [ "3.12" ]
-"3.11" = [ "3.11" ]
-"3.10" = [ "3.10" ]
+env_run_base.runner = "uv-venv-lock-runner"
+env_run_base.pip_pre = true
+env_run_base.extras = [ "all" ]
+env_run_base.pass_env = [ "TAP_DBF_*" ]
+env_run_base.set_env = { "PYO3_USE_ABI3_FORWARD_COMPATIBILITY" = "1" }
+env_run_base.dependency_groups = [ "testing" ]
+env_run_base.commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
+gh.python."3.15" = [ "3.15" ]
+gh.python."3.14" = [ "3.14", "dependencies", "typing" ]
+gh.python."3.13" = [ "3.13" ]
+gh.python."3.12" = [ "3.12" ]
+gh.python."3.11" = [ "3.11" ]
+gh.python."3.10" = [ "3.10" ]
 
 [tool.mypy]
 enable_error_code = [
@@ -186,10 +174,7 @@ warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
-module = [
+overrides = [ { ignore_missing_imports = true, module = [
   "dbfread.*",
   "fsspec.*",
-]
+] } ]
