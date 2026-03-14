@@ -561,7 +561,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -979,7 +979,7 @@ name = "importlib-metadata"
 version = "8.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "zipp" },
+    { name = "zipp", marker = "python_full_version < '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f3/49/3b30cad09e7771a4982d9975a8cbf64f00d4a1ececb53297f1d9a7be1b10/importlib_metadata-8.7.1.tar.gz", hash = "sha256:49fef1ae6440c182052f407c8d34a68f72efc36db9ca90dc0113398f2fdde8bb", size = 57107, upload-time = "2025-12-21T10:00:19.278Z" }
 wheels = [
@@ -1877,11 +1877,11 @@ wheels = [
 
 [[package]]
 name = "simpleeval"
-version = "1.0.4"
+version = "1.0.5"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/fd/d6/c25276f8aafd69172852a0f3564cf71b4339bae88d2609ee0843fb1eb6f7/simpleeval-1.0.4.tar.gz", hash = "sha256:32df6dfd5ca09212a7d8b45625b7a2b6aba697ad061a7b0f30938d7d158227fe", size = 37046, upload-time = "2026-03-11T07:40:38.666Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/ea/42430694f12bfb20ac00f1c4ae0e489ef23b302ea6abe6266934bb749bf6/simpleeval-1.0.5.tar.gz", hash = "sha256:b6b7933fffe13a345ada9917f8579c72e7b8afcfb7f7759b18fdd068aaa60486", size = 40853, upload-time = "2026-03-13T09:22:49.449Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/bf/3b1df358e83606ab12fae5861e759ae18084599cfaa9c828b6f8c7cbef03/simpleeval-1.0.4-py3-none-any.whl", hash = "sha256:380318357214f4abb98a0527bd598417707e5416ea13d4b67debf3f67c506c22", size = 17249, upload-time = "2026-03-11T07:40:36.543Z" },
+    { url = "https://files.pythonhosted.org/packages/2e/9c/43d7a2845fdf72f21572a0d7c33076cb69c2c73db9a297a5bfc6b87ebb54/simpleeval-1.0.5-py3-none-any.whl", hash = "sha256:c0de42a9f7849b7bc8c51338295341126f103a2a86beceffebafd9388e3cdfce", size = 18608, upload-time = "2026-03-13T09:22:47.875Z" },
 ]
 
 [[package]]
@@ -1947,7 +1947,7 @@ wheels = [
 
 [[package]]
 name = "singer-sdk"
-version = "0.54.0a7"
+version = "0.54.0a6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backports-datetime-fromisoformat", marker = "python_full_version < '3.11'" },
@@ -1971,9 +1971,9 @@ dependencies = [
     { name = "universal-pathlib" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/df/9eef3e1f4dad3d2c97a897c4227522efc2189347adf3aa49ce16cc1001d8/singer_sdk-0.54.0a7.tar.gz", hash = "sha256:5dd0a591dc334db02c19226fbd2a713ed63b2ec899144dcc9a80c3842fbde271", size = 1377452, upload-time = "2026-03-13T15:09:26.283Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/88/a1/29f576eb27b52231bf2c590f5c3db771fdb349b7cb8e3561a4d55a800638/singer_sdk-0.54.0a6.tar.gz", hash = "sha256:0cb5e371e883f4cc88f1a31628eb72045c3fc790530e430ccc6d45577f25dbae", size = 1377608, upload-time = "2026-03-11T18:44:01.757Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/67/6d012d6f985de2d593919a883567f7e06a3cb3c0cbd3162bb70413f6fac4/singer_sdk-0.54.0a7-py3-none-any.whl", hash = "sha256:98d3820495ef1f23c4995c6002038c60a34d5839c6475f4ee34eb598ecfc2769", size = 214566, upload-time = "2026-03-13T15:09:23.318Z" },
+    { url = "https://files.pythonhosted.org/packages/22/81/1c1ce7fa2bea579d973a5593b7b1a3dd01d43ecf183e886d20f2aa35162d/singer_sdk-0.54.0a6-py3-none-any.whl", hash = "sha256:6cc20a11b348ee349cb1798b68cceae20008476d57b0387ea35576873db258fb", size = 214561, upload-time = "2026-03-11T18:43:59.997Z" },
 ]
 
 [package.optional-dependencies]
