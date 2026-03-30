@@ -2,30 +2,39 @@ name: Build
 
 on:
   push:
+    tags: ["*"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
-  contents: write
-  id-token: write
+  contents: read
 
 jobs:
   build:
+    name: Build wheel and sdist
     runs-on: ubuntu-latest
     outputs:
-      package_version: ${{ steps.baipp.outputs.package_version }}
+        name: ${{ steps.baipp.outputs.package_name }}
+        version: ${{ steps.baipp.outputs.package_version }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: hynek/build-and-inspect-python-package@efb823f52190ad02594531168b7a2d5790e66516 # v2.14.0
         id: baipp
 
   publish:
+    name: Publish to PyPI
     runs-on: ubuntu-latest
     environment:
       name: publishing
-      url: https://pypi.org/project/tap-dbf/${{ needs.build.outputs.package_version }}
+      url: https://pypi.org/project/${{ needs.build.outputs.name }}/${{ needs.build.outputs.version }}
+    permissions:
+      id-token: write  # Needed for OIDC PyPI publishing
     needs: build
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
         with:
