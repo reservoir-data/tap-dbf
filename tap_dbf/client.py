@@ -90,9 +90,9 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
 
             try:
                 self.date = datetime.date(
-                    expand_year(self.header.year),  # type: ignore[attr-defined]
-                    self.header.month,  # type: ignore[attr-defined]
-                    self.header.day,  # type: ignore[attr-defined]
+                    expand_year(self.header.year),  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
+                    self.header.month,  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
+                    self.header.day,  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
                 )
             except ValueError:
                 # Invalid date or '\x00\x00\x00'.
@@ -117,7 +117,7 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
 
         with self.filesystem.open(self.filename, "rb") as infile:
             # Skip to first record.
-            infile.seek(self.header.headerlen, 0)  # type: ignore[union-attr]
+            infile.seek(self.header.headerlen, 0)  # type: ignore[union-attr]  # ty:ignore[unresolved-attribute]
 
             while True:
                 sep = infile.read(1)
@@ -153,7 +153,7 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
             self._open_memofile() as memofile,
         ):
             # Skip to first record.
-            infile.seek(self.header.headerlen, 0)  # type: ignore[union-attr]
+            infile.seek(self.header.headerlen, 0)  # type: ignore[union-attr]  # ty:ignore[unresolved-attribute]
 
             if not self.raw:
                 field_parser = self.parserclass(self, memofile)

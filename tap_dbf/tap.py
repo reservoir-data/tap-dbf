@@ -122,8 +122,8 @@ def _patch_open(func: OpenFunc) -> OpenFunc:
         The original `builtins.open` function.
     """
     old_impl = builtins.open
-    builtins.open = func  # type: ignore[assignment]
-    return old_impl  # type: ignore[return-value]
+    builtins.open = func  # type: ignore[assignment]  # ty:ignore[invalid-assignment]
+    return old_impl  # type: ignore[return-value]  # ty:ignore[invalid-return-type]
 
 
 class DBFStream(Stream):
