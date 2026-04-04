@@ -37,7 +37,7 @@ env:
   # renovate: datasource=pypi depName=tox-gh
   TOX_GH_VERSION: 1.7.1
   # renovate: datasource=pypi depName=tox-uv
-  TOX_UV_VERSION: 1.33.0
+  TOX_UV_VERSION: 1.33.4
 
 jobs:
   build-package:
