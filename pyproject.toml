@@ -132,20 +132,20 @@ DEP004 = [
 table_format = "long"
 
 [tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
 enable_error_code = [
   "ignore-without-code",
   "redundant-expr",
   "truthy-bool",
 ]
 strict = true
-warn_redundant_casts = true
-warn_unreachable = true
 warn_unused_configs = true
-warn_unused_ignores = true
-overrides = [ { ignore_missing_imports = true, module = [
+overrides = [ { module = [
   "dbfread.*",
   "fsspec.*",
-] } ]
+], ignore_missing_imports = true } ]
 
 [tool.pytest]
 addopts = [ "-v", "-ra" ]
@@ -156,11 +156,11 @@ strict = true
 testpaths = [ "tests" ]
 
 [tool.tox]
-requires = [ "tox>=4.51", "tox-uv", "tox-gh>=1.6.1" ]
+requires = [ "tox>=4.51", "tox-gh>=1.6.1", "tox-uv" ]
 env_list = [
   "dependencies",
-  "typing",
   "test",
+  "typing",
 ]
 [tool.tox.env.dependencies]
 description = "check for unused, missing and transitive dependencies"
@@ -168,10 +168,10 @@ dependency_groups = [ "testing" ]
 commands = [ [ "deptry", "." ] ]
 [tool.tox.env.sync]
 description = "run tap with sample data"
-base_python_file = [ ".python-version" ]
 pip_pre = true
 set_env = { TAP_DBF_PATH = "tests/data/files/contacts.dbf", TAP_DBF_IGNORE_MISSING_MEMOFILE = "true" }
 commands = [ [ "tap-dbf", { replace = "posargs", default = [ "--config=ENV" ], extend = true } ] ]
+base_python_file = [ ".python-version" ]
 [tool.tox.env.test]
 description = "run tests on Python {py_dot_ver}"
 base_python_file = [ ".python-version" ]
@@ -184,13 +184,13 @@ commands = [
 ]
 
 [tool.tox.env_run_base]
-description = "run tests on Python {py_dot_ver}"
 runner = "uv-venv-lock-runner"
+description = "run tests on Python {py_dot_ver}"
 pip_pre = true
+dependency_groups = [ "testing" ]
 extras = [ "all" ]
 pass_env = [ "TAP_DBF_*" ]
 set_env = { PYO3_USE_ABI3_FORWARD_COMPATIBILITY = "1" }
-dependency_groups = [ "testing" ]
 commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
 [tool.tox.gh]
 python."3.14" = [ "3.14", "dependencies", "typing" ]
