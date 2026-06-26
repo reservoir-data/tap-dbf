@@ -168,10 +168,10 @@ dependency_groups = [ "testing" ]
 commands = [ [ "deptry", "." ] ]
 [tool.tox.env.sync]
 description = "run tap with sample data"
+base_python_file = [ ".python-version" ]
 pip_pre = true
 set_env = { TAP_DBF_PATH = "tests/data/files/contacts.dbf", TAP_DBF_IGNORE_MISSING_MEMOFILE = "true" }
 commands = [ [ "tap-dbf", { replace = "posargs", default = [ "--config=ENV" ], extend = true } ] ]
-base_python_file = [ ".python-version" ]
 [tool.tox.env.test]
 description = "run tests on Python {py_dot_ver}"
 base_python_file = [ ".python-version" ]
