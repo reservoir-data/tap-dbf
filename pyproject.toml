@@ -62,23 +62,23 @@ Repository = "https://github.com/reservoir-data/tap-dbf"
 
 [dependency-groups]
 dev = [
+  "deptry>=0.25",
   { include-group = "testing" },
   { include-group = "typing" },
 ]
 testing = [
-  "deptry>=0.12",
-  "pytest>=7.4",
+  "pytest>=9",
   "pytest-github-actions-annotate-failures~=0.3.0",
   "singer-sdk[testing]",
 ]
 typing = [
-  "mypy",
-  "ty>=0.0.1a23",
+  "mypy>=2.1",
+  "ty>=0.0.50",
   "typing-extensions>=4.7.1; python_version<'3.11'",
 ]
 
-[tool.hatch]
 [tool.hatch.version]
+fallback-version = "0.0.0.dev0"
 source = "vcs"
 
 [tool.uv]
@@ -106,26 +106,14 @@ unfixable = [
   "ERA001", # commented-out-code
 ]
 flake8-annotations.allow-star-arg-any = true
-isort.known-first-party = [
-  "tap_dbf",
-]
-isort.required-imports = [
-  "from __future__ import annotations",
-]
 pydocstyle.convention = "google"
 preview = true
 
-[tool.deptry]
-[tool.deptry.package_module_name_map]
-mypy = "mypy"
 [tool.deptry.per_rule_ignores]
 DEP002 = [
   "gcsfs",
   "s3fs",
   "tap-dbf",
-]
-DEP004 = [
-  "typing_extensions",
 ]
 
 [tool.pyproject-fmt]
@@ -156,7 +144,7 @@ strict = true
 testpaths = [ "tests" ]
 
 [tool.tox]
-requires = [ "tox>=4.51", "tox-gh>=1.6.1", "tox-uv" ]
+requires = [ "tox>=4.55", "tox-gh>=1.6.1", "tox-uv>=1.35" ]
 env_list = [
   "dependencies",
   "test",
@@ -164,7 +152,7 @@ env_list = [
 ]
 [tool.tox.env.dependencies]
 description = "check for unused, missing and transitive dependencies"
-dependency_groups = [ "testing" ]
+dependency_groups = [ "dev" ]
 commands = [ [ "deptry", "." ] ]
 [tool.tox.env.sync]
 description = "run tap with sample data"
@@ -179,7 +167,7 @@ base_python_file = [ ".python-version" ]
 description = "type checks"
 dependency_groups = [ "testing", "typing" ]
 commands = [
-  [ "mypy", "--strict", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
+  [ "mypy", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
   [ "ty", "check", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
 ]
 

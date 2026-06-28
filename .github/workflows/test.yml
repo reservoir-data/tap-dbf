@@ -78,7 +78,7 @@ jobs:
     - name: Run
       run: >
         uvx
-        --with tox-uv==${TOX_UV_VERSION}
-        --with tox-gh==${TOX_GH_VERSION}
-        --with tox==${TOX_VERSION}
+        --with tox-uv=="${TOX_UV_VERSION}"
+        --with tox-gh=="${TOX_GH_VERSION}"
+        --with tox=="${TOX_VERSION}"
         tox
