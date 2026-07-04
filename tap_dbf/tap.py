@@ -27,15 +27,11 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
     from os import PathLike
     from types import TracebackType
+    from typing import Self
 
     from dbfread.dbf import DBFField
     from fsspec import AbstractFileSystem
     from singer_sdk.helpers.types import Context
-
-    if sys.version_info >= (3, 11):
-        from typing import Self
-    else:
-        from typing_extensions import Self
 
     OpenFunc = Callable[[PathLike[bytes], str], BinaryIO]
     RawRecord = dict[str, Any]
