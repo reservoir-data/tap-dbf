@@ -1861,7 +1861,7 @@ wheels = [
 
 [[package]]
 name = "singer-sdk"
-version = "0.54.5"
+version = "0.55.0a2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -1884,9 +1884,9 @@ dependencies = [
     { name = "universal-pathlib" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/52/d4/48444fc63b94438b4affd261e7e982c647ba2d802c6e102421219109f5d0/singer_sdk-0.54.5.tar.gz", hash = "sha256:a0ac6524721c0b0b75999864f74c6280f4611be930c39103cb101e20cacc3d8c", size = 1380791, upload-time = "2026-06-16T02:43:11.614Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/d8/03d827e0547b6bf9f7f0bdc1f40b99831ef24e8131a2140ae562156e6738/singer_sdk-0.55.0a2.tar.gz", hash = "sha256:d84d44f72165bcca249f22db1fdd42daf76f3c21b313ab690bd9c76441eae2a3", size = 1385358, upload-time = "2026-07-10T22:50:49.954Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/43/71/3f0a36c5ece55a63ffdb8556dfd573957f22ed75f39526897d17a8f37233/singer_sdk-0.54.5-py3-none-any.whl", hash = "sha256:5479b69e2240ec4dd7635f5290d958ef141694a036d6e9aa6e167005aa9c2188", size = 217459, upload-time = "2026-06-16T02:43:09.743Z" },
+    { url = "https://files.pythonhosted.org/packages/16/85/fb5d382a039286fc4c1eecd53a080670f697474a01f609f6ba75315ecffb/singer_sdk-0.55.0a2-py3-none-any.whl", hash = "sha256:f8b6affc37dda7d26925b27dde15bb7521e2f50d6894b1726e5099396b085840", size = 219249, upload-time = "2026-07-10T22:50:48.1Z" },
 ]
 
 [package.optional-dependencies]
@@ -2014,7 +2014,7 @@ requires-dist = [
     { name = "gcsfs", marker = "extra == 'gcs'", specifier = "~=2026.2.0" },
     { name = "s3fs", marker = "extra == 'all'", specifier = "~=2026.2.0" },
     { name = "s3fs", marker = "extra == 's3'", specifier = "~=2026.2.0" },
-    { name = "singer-sdk", specifier = "~=0.54.5" },
+    { name = "singer-sdk", specifier = "~=0.55.0a2" },
     { name = "typing-extensions", marker = "python_full_version < '3.12'", specifier = ">=4.15" },
 ]
 provides-extras = ["all", "gcs", "s3"]
