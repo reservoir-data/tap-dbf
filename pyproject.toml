@@ -33,7 +33,7 @@ dynamic = [
 dependencies = [
   "dbfread~=2.0.7",
   "fsspec~=2026.2.0",
-  "singer-sdk~=0.54.5",
+  "singer-sdk~=0.55.0a2",
   "typing-extensions>=4.15; python_full_version<'3.12'",
 ]
 [[project.authors]]
