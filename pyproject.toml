@@ -169,7 +169,6 @@ commands = [
   [ "mypy", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
   [ "ty", "check", { replace = "posargs", default = [ "tap_dbf", "tests" ], extend = true } ],
 ]
-
 [tool.tox.env_run_base]
 runner = "uv-venv-lock-runner"
 description = "run tests on Python {py_dot_ver}"
