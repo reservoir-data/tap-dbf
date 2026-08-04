@@ -25,6 +25,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Topic :: Database",
 ]
 dynamic = [
@@ -116,6 +117,7 @@ DEP002 = [
 ]
 
 [tool.pyproject-fmt]
+max_supported_python = "3.15"
 table_format = "long"
 
 [tool.mypy]
@@ -174,11 +176,11 @@ runner = "uv-venv-lock-runner"
 description = "run tests on Python {py_dot_ver}"
 pip_pre = true
 dependency_groups = [ "testing" ]
-extras = [ "all" ]
 pass_env = [ "TAP_DBF_*" ]
 set_env = { PYO3_USE_ABI3_FORWARD_COMPATIBILITY = "1" }
 commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
 [tool.tox.gh]
+python."3.15" = [ "3.15" ]
 python."3.14" = [ "3.14", "dependencies", "typing" ]
 python."3.13" = [ "3.13" ]
 python."3.12" = [ "3.12" ]
