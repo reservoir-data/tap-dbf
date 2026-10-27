@@ -17,12 +17,10 @@ keywords = [
 ]
 license = "Apache-2.0"
 license-files = [ "LICENSE" ]
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3.15",
@@ -35,7 +33,6 @@ dependencies = [
   "dbfread~=2.0.7",
   "fsspec~=2026.7.0",
   "singer-sdk~=0.55.0a2",
-  "typing-extensions>=4.15; python_full_version<'3.12'",
 ]
 [[project.maintainers]]
 name = "Edgar R. Mondragón"
@@ -93,17 +90,17 @@ select = [
   "ALL",
 ]
 ignore = [
-  "COM812",
   "CPY",
   "DJ",
-  "ISC001",
+  "missing-trailing-comma",
   "PD",
+  "single-line-implicit-string-concatenation",
 ]
 per-file-ignores."tests/*" = [
-  "ANN201",
+  "missing-return-type-undocumented-public-function",
 ]
 unfixable = [
-  "ERA001", # commented-out-code
+  "commented-out-code", # commented-out-code
 ]
 flake8-annotations.allow-star-arg-any = true
 pydocstyle.convention = "google"
@@ -180,8 +177,8 @@ pass_env = [ "TAP_DBF_*" ]
 set_env = { PYO3_USE_ABI3_FORWARD_COMPATIBILITY = "1" }
 commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
 [tool.tox.gh]
-python."3.15" = [ "3.15" ]
-python."3.14" = [ "3.14", "dependencies", "typing" ]
+python."3.15" = [ "3.15", "dependencies", "typing" ]
+python."3.14" = [ "3.14" ]
 python."3.13" = [ "3.13" ]
 python."3.12" = [ "3.12" ]
 python."3.11" = [ "3.11" ]
