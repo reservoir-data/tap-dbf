@@ -7,9 +7,8 @@ from __future__ import annotations
 
 import builtins
 import logging
-import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, BinaryIO
+from typing import TYPE_CHECKING, Any, BinaryIO, override
 from urllib.parse import parse_qsl, urlparse, urlunparse
 
 import fsspec
@@ -17,11 +16,6 @@ import singer_sdk.typing as th
 from singer_sdk import Stream, Tap
 
 from tap_dbf.client import FilesystemDBF
-
-if sys.version_info >= (3, 12):
-    from typing import override
-else:
-    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -125,7 +119,6 @@ def _patch_open(func: OpenFunc) -> OpenFunc:
 class DBFStream(Stream):
     """A dBase file stream."""
 
-    @override
     def __init__(
         self: DBFStream,
         tap: Tap,

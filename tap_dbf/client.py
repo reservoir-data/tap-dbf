@@ -6,20 +6,14 @@ Copyright 2024 Edgar Ramírez-Mondragón.
 from __future__ import annotations
 
 import collections
-import datetime
-import sys
+import datetime as dt
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, override
 
 from dbfread import DBF
 from dbfread.dbf import expand_year, ifind
 from dbfread.exceptions import DBFNotFound
 from dbfread.field_parser import FieldParser
-
-if sys.version_info >= (3, 12):
-    from typing import override
-else:
-    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -30,8 +24,7 @@ if TYPE_CHECKING:
 class FilesystemDBF(DBF):  # type: ignore[misc]
     """A DBF implementation that can open files in arbitrary filesystems."""
 
-    @override
-    def __init__(
+    def __init__(  # ruff: ignore[too-many-arguments]
         self,
         filename: str,
         filesystem: AbstractFileSystem,
@@ -60,7 +53,7 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
         self.ignore_missing_memofile = ignore_missing_memofile
         self.char_decode_errors = char_decode_errors
 
-        self.date: datetime.date | None
+        self.date: dt.date | None
 
         self.recfactory = recfactory
 
@@ -89,7 +82,7 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
             self._check_headers()
 
             try:
-                self.date = datetime.date(
+                self.date = dt.date(
                     expand_year(self.header.year),  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
                     self.header.month,  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
                     self.header.day,  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
@@ -136,7 +129,7 @@ class FilesystemDBF(DBF):  # type: ignore[misc]
     def _iter_records(
         self,
         record_type: bytes = b" ",
-    ) -> Generator[dict[str, Any], None, None]:
+    ) -> Generator[dict[str, Any]]:
         """Iterate over records in the table.
 
         Args:
